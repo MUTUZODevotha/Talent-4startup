@@ -35,12 +35,19 @@ Deploy the system in a real-world public restroom facility and monitor its perfo
 **Materials and Equipment:**
 
 Coin acceptor mechanism (e.g., Coinco, Pyramid Technologies)
+
 Microcontroller or single board computer (e.g., Arduino Uno, Raspberry Pi)
+
 Air quality monitoring sensors (e.g., temperature and humidity sensor, CO2 sensor, VOC sensor, PM sensor)
+
 Connectivity modules (e.g., Wi-Fi module, Bluetooth module)
+
 Power supply (e.g., battery pack, DC power adapter)
+
 Enclosure (waterproof and durable)
+
 Bylink platform access
+
 LCD display, LED indicators, audible cues (for user interface)
 
 **Design and Development:**
