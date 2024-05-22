@@ -1,37 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUTHOMATIC COIN-BASED PUBLIC TOILET PAYEMENT</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUTHOMATIC COIN-BASED PUBLIC TOILET PAYEMENT</title>
 </head>
+
 <body>
   <h1>PROJECT</h1>
-  <h1>TITLE:AUTHOMATIC COIN-BASED PUBLIC TOILET PAYEMENT</h1>
-    <h2>Our project focuses on implementing an automatic coin-based public toilet payment system. Users will insert a coin into a designated coin acceptor to access the toilet facility. Simultaneously, we will integrate air quality monitoring sensors within the toilet, with data transmitted to the Bylink platform. This innovative approach combines convenient access control with real-time environmental monitoring, enhancing user experience and promoting hygiene standards in public restrooms.</h2>
-<h1>objective</h1>
-     <h2>Develop an automatic coin-based access control system for public restroom facilities.
-      Integrate air quality monitoring sensors within the restroom to ensure a clean and hygienic environment.
-      Transmit sensor data to the Bylink platform for real-time monitoring and analysis.
-      Enhance user experience and promote hygiene standards in public restrooms.</h2>
-      <h1>scope</h1>
-      <h2>This project will focus on the design, development, and implementation of the automatic coin-based public toilet payment system with integrated air quality monitoring. It will cover the hardware and software components required for the system, as well as the integration with the Bylink platform. However, it will not address structural modifications to existing restroom facilities.
-      </h2>
-      <h1>Methodology:</h1>
-      <h2>Research existing coin acceptor mechanisms and air quality monitoring sensors suitable for integration.
-        Design the system architecture, including hardware layout, sensor placement, and communication protocols.
-        Develop the software for controlling the coin acceptor, reading sensor data, and transmitting it to the Bylink platform.
-        Prototype and test the system in controlled environments to ensure functionality and reliability.
-        Deploy the system in a real-world public restroom facility and monitor its performance over time.</h2>
-        <h1>Materials and Equipment:</h1>
-        <h2>Coin acceptor mechanism (e.g., Coinco, Pyramid Technologies)
-          Microcontroller or single board computer (e.g., Arduino Uno, Raspberry Pi)
-          Air quality monitoring sensors (e.g., temperature and humidity sensor, CO2 sensor, VOC sensor, PM sensor)
-          Connectivity modules (e.g., Wi-Fi module, Bluetooth module)
-          Power supply (e.g., battery pack, DC power adapter)
-          Enclosure (waterproof and durable)
-          Bylink platform access
-          LCD display, LED indicators, audible cues (for user interface)
-          </h2>
+  <h2>TITLE:AUTHOMATIC COIN-BASED PUBLIC TOILET PAYEMENT</h2>
+  <p>Our project focuses on implementing an automatic coin-based public toilet payment system. Users will insert a coin
+    into a designated coin acceptor to access the toilet facility. Simultaneously, we will integrate air quality
+    monitoring sensors within the toilet, with data transmitted to the Bylink platform. This innovative approach
+    combines convenient access control with real-time environmental monitoring, enhancing user experience and promoting
+    hygiene standards in public restrooms.</p>
+  <h2>objective</h2>
+  <p>Develop an automatic coin-based access control system for public restroom facilities.
+    Integrate air quality monitoring sensors within the restroom to ensure a clean and hygienic environment.
+    Transmit sensor data to the Bylink platform for real-time monitoring and analysis.
+    Enhance user experience and promote hygiene standards in public restrooms.</p>
+  <h2>scope</h2>
+  <p>This project will focus on the design, development, and implementation of the automatic coin-based public toilet
+    payment system with integrated air quality monitoring. It will cover the hardware and software components required
+    for the system, as well as the integration with the Bylink platform. However, it will not address structural
+    modifications to existing restroom facilities.
+  </p>
+  <h2>Methodology:</h2>
+  <p>Research existing coin acceptor mechanisms and air quality monitoring sensors suitable for integration.
+    Design the system architecture, including hardware layout, sensor placement, and communication protocols.
+    Develop the software for controlling the coin acceptor, reading sensor data, and transmitting it to the Bylink
+    platform.
+    Prototype and test the system in controlled environments to ensure functionality and reliability.
+    Deploy the system in a real-world public restroom facility and monitor its performance over time.</p>
+  <h2>Materials and Equipment:</h2>
+  <p>Coin acceptor mechanism (e.g., Coinco, Pyramid Technologies)
+    Microcontroller or single board computer (e.g., Arduino Uno, Raspberry Pi)
+    Air quality monitoring sensors (e.g., temperature and humidity sensor, CO2 sensor, VOC sensor, PM sensor)
+    Connectivity modules (e.g., Wi-Fi module, Bluetooth module)
+    Power supply (e.g., battery pack, DC power adapter)
+    Enclosure (waterproof and durable)
+    Bylink platform access
+    LCD display, LED indicators, audible cues (for user interface)
+  </p>
+  <h2>Design and Development:</h2>
+  <p>Design the physical layout of the system components within the restroom facility. Develop the circuitry and
+    software for the coin acceptor mechanism to control access. Integrate air quality monitoring sensors into the system
+    and establish communication with the microcontroller. Implement protocols for transmitting sensor data to the Bylink
+    platform. Design the user interface for providing feedback to users during coin insertion and access.</p>
+  <h2>Implementation:</h2>
+  <p>Assemble the hardware components and install them in the restroom facility. Configure and calibrate the coin
+    acceptor mechanism and air quality monitoring sensors. Develop and deploy the software for controlling the system
+    and transmitting data to the Bylink platform. Conduct initial testing to ensure proper functionality and integration
+    of all components. Make any necessary adjustments or refinements based on testing feedback.</p>
+  <h2>Testing and Evaluation:</h2>
+  <p>Test the system under various conditions to evaluate its performance and reliability. Measure the accuracy of the
+    coin acceptor mechanism in identifying and accepting coins. Validate the readings from the air quality monitoring
+    sensors against established standards. Assess the responsiveness and effectiveness of the system's user interface.
+    Collect feedback from users and administrators to identify areas for improvement</p>
+  <h2>Running code for opening door</h2>
+  <h2>#include <Wire.h>
+    #include <Servo.h>
+    
+    // Constants
+    const int coinpin = 2;
+    const int ledpin = 4;
+    const int servoPin = 5; // Servo motor pin
+    const int mq135Pin = A3; // MQ135 sensor connected to A0
+    
+    // Variables
+    volatile int pulse = 0;
+    boolean bInserted = false;
+    Servo myservo; // Create servo object
+    
+    // Setup
+    void setup() {
+      Serial.begin(9600);
+      attachInterrupt(digitalPinToInterrupt(coinpin), coinInterrupt, RISING);
+      pinMode(ledpin, OUTPUT);
+      myservo.attach(servoPin); // Attach servo to pin 5
+      
+      // Initialize I2C as slave with address 8
+      Wire.begin(8);
+      Wire.onRequest(requestEvent); // Register request event handler
+    }
+    
+    // Main loop
+    void loop() {
+      if (bInserted) { // For showing LED ON when inserted
+        bInserted = false;
+        digitalWrite(ledpin, HIGH);    
+        myservo.write(180); // Turn servo to 180 degrees
+        delay(1000); // Wait for 1 second
+        myservo.write(0); // Return servo to 0 degrees
+        delay(100); // Ensure a brief delay before turning off the LED
+      } else {
+        // Turn off LED
+        digitalWrite(ledpin, LOW);
+      }
+    }
+    
+    // Interrupt handler for coin insertion
+    void coinInterrupt() {
+      // Each time a pulse is sent from the coin acceptor,
+      // interrupt main loop to add 1 and flip on the LED
+      pulse++;
+      bInserted = true;
+      Serial.println(pulse);
+    }
+    
+    // Request event handler for I2C
+    void requestEvent() {
+      int sensorData = analogRead(mq135Pin); // Read data from MQ135
+      Wire.write(sensorData >> 8); // Send high byte
+      Wire.write(sensorData & 0xFF); // Send low byte
+    }</h2>
+    <h2>Running code for Blyink</h2>
+    <p>#define BLYNK_TEMPLATE_ID "TMPL2ZkOyuuTg"
+      #define BLYNK_TEMPLATE_NAME "ICT"
+      #define BLYNK_AUTH_TOKEN "qpiKciNRfcks_SiNrX3-tm0AyzYjDItR"
+      
+      #include <Wire.h>
+      #include <WiFi.h>
+      #include <BlynkSimpleEsp32.h>
+      
+      // Blynk credentials
+      char auth[] = BLYNK_AUTH_TOKEN;
+      char ssid[] = "Danny";
+      char pass[] = "daniel14";
+      
+      void setup() {
+        Serial.begin(9600); // Initialize serial communication for debugging
+        Wire.begin(21, 22); // Initialize I2C as master with SDA on GPIO 21 and SCL on GPIO 22
+      
+        // Connect to WiFi
+        WiFi.begin(ssid, pass);
+        while (WiFi.status() != WL_CONNECTED) {
+          delay(500);
+          Serial.print(".");
+        }
+        Serial.println("\nConnected to WiFi");
+      
+        // Initialize Blynk
+        Blynk.begin(auth, ssid, pass);
+      }
+      
+      void loop() {
+        Wire.requestFrom(8, 2); // Request 2 bytes from the slave device with address 8
+        if (Wire.available() == 2) {
+          int data = Wire.read() << 8; // Read high byte
+          data |= Wire.read(); // Read low byte and combine
+          Serial.print("MQ135 Sensor Reading: ");
+          Serial.println(data); // Print data to the serial monitor
+      
+          // Send data to Blynk virtual pin V0
+          Blynk.virtualWrite(V0, data);
+        }
+        
+        Blynk.run(); // Run Blynk
+        delay(1000); // Delay for demonstration purposes
+      }</p>
 </body>
+
 </html>
