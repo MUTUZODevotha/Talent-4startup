@@ -59,7 +59,7 @@
     sensors against established standards. Assess the responsiveness and effectiveness of the system's user interface.
     Collect feedback from users and administrators to identify areas for improvement</p>
   <h2>Running code for opening door</h2>
-  <h2>#include <Wire.h>
+  <p>#include <Wire.h>
     #include <Servo.h>
     
     // Constants
@@ -114,7 +114,7 @@
       int sensorData = analogRead(mq135Pin); // Read data from MQ135
       Wire.write(sensorData >> 8); // Send high byte
       Wire.write(sensorData & 0xFF); // Send low byte
-    }</h2>
+    }</p>
     <h2>Running code for Blyink</h2>
     <p>#define BLYNK_TEMPLATE_ID "TMPL2ZkOyuuTg"
       #define BLYNK_TEMPLATE_NAME "ICT"
